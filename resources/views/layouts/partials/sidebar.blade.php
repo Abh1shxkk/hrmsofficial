@@ -3,15 +3,35 @@
     $emp = auth()->user()->employee;
 @endphp
 
-<aside class="fixed inset-y-0 left-0 z-30 bg-gray-900 text-white flex flex-col transition-all duration-300"
-       :class="sidebarOpen ? 'w-64' : 'w-16'">
+{{--
+    Sidebar behaviour:
+    - Mobile (< md): full-width drawer (w-64) that slides in/out via `mobileOpen`,
+      and is hidden off-screen by default.
+    - Desktop (>= md): always visible, collapses between w-64 and w-16 via `sidebarOpen`.
+--}}
+<aside class="fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 text-white flex flex-col transition-all duration-300"
+       :class="{
+           '-translate-x-full': !mobileOpen,
+           'translate-x-0': mobileOpen,
+           'md:translate-x-0 md:w-64': sidebarOpen,
+           'md:translate-x-0 md:w-16': !sidebarOpen,
+       }">
 
     {{-- Logo --}}
     <div class="flex items-center justify-between h-16 px-4 border-b border-gray-700">
-        <span class="text-xl font-bold" x-show="sidebarOpen">HRMS</span>
-        <button @click="sidebarOpen = !sidebarOpen" class="text-gray-400 hover:text-white">
+        <span class="text-xl font-bold" x-show="sidebarOpen || mobileOpen">HRMS</span>
+
+        {{-- Collapse toggle (desktop only) --}}
+        <button @click="sidebarOpen = !sidebarOpen" class="hidden md:block text-gray-400 hover:text-white">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+
+        {{-- Close button (mobile only) --}}
+        <button @click="mobileOpen = false" class="md:hidden text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
         </button>
     </div>
@@ -63,7 +83,7 @@
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </div>
             @endif
-            <div class="ml-3" x-show="sidebarOpen">
+            <div class="ml-3" x-show="sidebarOpen || mobileOpen">
                 <p class="text-sm font-medium">{{ auth()->user()->name }}</p>
                 <p class="text-xs text-gray-400 capitalize">{{ str_replace('_', ' ', $role) }}</p>
             </div>
