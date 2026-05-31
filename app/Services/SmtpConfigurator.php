@@ -16,6 +16,23 @@ class SmtpConfigurator
             return false;
         }
 
+        // On hosts that block outbound SMTP ports (e.g. Railway), fall back to
+        // Resend's HTTP API when a key is configured. The DB "from" address is
+        // still respected so the admin keeps control over the sender.
+        if (config('services.resend.key')) {
+            Config::set('mail.default', 'resend');
+
+            if ($setting->from_address) {
+                Config::set('mail.from.address', $setting->from_address);
+            }
+
+            if ($setting->from_name) {
+                Config::set('mail.from.name', $setting->from_name);
+            }
+
+            return true;
+        }
+
         Config::set('mail.default', $setting->mailer);
         $scheme = $setting->encryption === 'ssl' ? 'smtps' : null;
 
