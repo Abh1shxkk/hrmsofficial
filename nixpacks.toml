@@ -1,0 +1,22 @@
+# Railway / Nixpacks build configuration for Laravel 12
+# PHP 8.2 backend + Node 22 frontend (Vite build)
+
+[phases.setup]
+nixPkgs = ["php82", "php82Packages.composer", "nodejs_22", "npm-9_x"]
+
+[phases.install]
+cmds = [
+  "composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist",
+  "npm ci"
+]
+
+[phases.build]
+cmds = [
+  "npm run build",
+  "php artisan config:clear",
+  "php artisan route:clear",
+  "php artisan view:clear"
+]
+
+[start]
+cmd = "bash ./start.sh"
