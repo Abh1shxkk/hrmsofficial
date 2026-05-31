@@ -58,6 +58,7 @@
                 </thead>
                 <tbody class="divide-y">
                     @forelse($tasks as $task)
+                    @continue(! $task->assignedEmployee || ! $task->assignedEmployee->user)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <p class="font-medium">{{ $task->title }}</p>

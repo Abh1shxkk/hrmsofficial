@@ -116,6 +116,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-100">
                                 @foreach($records as $att)
+                                    @continue(! $att->employee || ! $att->employee->user)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-4 py-3">
                                             <div class="flex items-center">

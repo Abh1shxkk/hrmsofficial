@@ -44,6 +44,7 @@
                 </thead>
                 <tbody class="divide-y">
                     @forelse($structures as $s)
+                        @continue(! $s->employee || ! $s->employee->user)
                         @php $gross = $s->basic + $s->hra + ($s->transport_allowance ?? 0) + ($s->other_allowances ?? 0); @endphp
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4">
